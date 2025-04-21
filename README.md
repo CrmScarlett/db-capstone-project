@@ -23,4 +23,7 @@ Please running the scripts in order below:
 7. Open Jupyter file below and establish connection from Python Client to MySQL DB, and query as task asked
    
    LittleLemonFinalProject.ipynb
+
+   !!! Please Note:  Please review logic in the script in detail and cross check the stored procedures returned result with data in database.
+   !!! Don't use 'correct answer' from the questions. The questions and the data source LittleLemon_data.xlsx are mismatching itself.
  
