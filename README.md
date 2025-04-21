@@ -6,10 +6,12 @@ Please running the scripts in order below:
    
    littlelemon_ERD.mwb
    littlelemon_ERD.mwb.bak
+
+2. Forward engineer and creating schema with basic data
    
 3. Running SQL script below in sequence to create schema/populate data in your local server
    
-   littlelemonDB creation script.sql  
+   LoadLittleLemonfileintoDB.sql
    Verify DB Creation.sql   
    littlelemon create virtual objects.sql
    littlelemon create triggers and transactions.sql
