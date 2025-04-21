@@ -1,28 +1,32 @@
 USE littlelemondb;
 
 -- I. Triggers and transactions
-DROP TRIGGER [IF EXISTS] [schema_name] trigger_name
-CREATE TRIGGER trigger_name 
-{BEFORE | AFTER} {INSERT | UPDATE| DELETE} 
-ON table_name FOR EACH ROW 
-trigger_body;
+-- DROP TRIGGER [IF EXISTS] [schema_name] trigger_name
+-- CREATE TRIGGER trigger_name 
+-- {BEFORE | AFTER} {INSERT | UPDATE| DELETE} 
+-- ON table_name FOR EACH ROW 
+-- trigger_body;
 
--- START TRANSACTION; 
--- SQL statements 
+-- START TRANSACTION; littlelemonrawdata
+-- SQL statements littlelemondata
 -- COMMIT; 
 -- /ROLLBACK; 
 
 -- Task1: populate the Bookings table of their database with some records of data. Your first task is to replicate the list of records in the following table by adding them to the Little Lemon booking table. 
+-- SELECT * FROM Customers order by 1
 
+INSERT INTO Customers(CustomerID, FirstName, LastName, City, Country,PhoneNumber)
+VALUES(2,'Anna','Belle','Springfield','United States',1233211234)
+,(3,'John','Snow','Kansas City','United States',1233211235)
+,(4,'Alex','June','Springfield','United States',1233215232);
 
+INSERT INTO Bookings(Date, CustomerID, TableNumber)
+VALUES('2022-10-10','1',1)
+,('2022-11-12','3',3)
+,('2022-10-11','2',2)
+,('2022-10-13','2',1);
 
--- INSERT INTO Bookings(Date, CustomerID, TableNumber)
--- VALUES('2022-10-10',5,1)
--- ,('2022-11-12',3,3)
--- ,('2022-10-11',2,2)
--- ,('2022-10-13',2,1)
-
-SELECT * FROM Bookings;
+-- SELECT * FROM Bookings;
 
 
 -- Task 2: create a stored procedure called CheckBooking to check whether a table in the restaurant is already booked. 
@@ -35,13 +39,13 @@ CREATE PROCEDURE CheckBooking(IN p_date date, p_tableno INT)
     SELECT BookingID INTO p_BookingID FROM Bookings
     WHERE Date = p_date AND TableNumber = p_tableno;
 
-	SELECT CASE WHEN p_BookingID IS NULL THEN CONCAT(p_tableno,' is available at selected date')
+	SELECT CASE WHEN p_BookingID IS NULL THEN CONCAT('Table ',p_tableno,' is available at selected date')
     ELSE CONCAT('Table ',p_tableno,' is already booked')
     END AS 'Booking Status';
 	END //
 DELIMITER ;
 
-CALL CheckBooking("2025-03-27",4);
+CALL CheckBooking("2022-11-12",3);
 
 
 -- Task 3:  verify a booking, and decline any reservations for tables that are already booked under another name. 
@@ -73,8 +77,8 @@ CREATE PROCEDURE AddValidBooking(IN p_date date, p_tableno INT,p_CustomerID INT)
 	END //
 DELIMITER ;
 
-CALL AddValidBooking("2025-5-18",2,2);
---  DELETE FROM Bookings where bookingid >= 20
+CALL AddValidBooking("2022-12-17",6,2);
+ 
 
 -- select * from bookings;
 
@@ -132,8 +136,9 @@ CREATE PROCEDURE UpdateBooking(IN p_bookingID INT,p_date DATE)
 		SET Date = p_date
 		WHERE BookingID = p_bookingID;     
 
-        
-        IF ck_bookingdate <> p_date 
+        IF cK_bookingdate IS NULL
+        THEN SELECT "Booking does not exist, please check another bookingID" AS "Booking ID Not Exist!";
+        ELSEIF ck_bookingdate <> p_date 
         THEN
 			SELECT CONCAT('Booking ',p_bookingID, ' is updated') AS 'Confirmation';
 		COMMIT;
@@ -144,7 +149,9 @@ CREATE PROCEDURE UpdateBooking(IN p_bookingID INT,p_date DATE)
 	END //
 DELIMITER ;
 
-CALL UpdateBooking(31,"2025-04-23");
+CALL UpdateBooking(9,"2025-04-23");
+
+-- SELECT * FROM Bookings;
 
 
 -- Task 3: create a new procedure called CancelBooking that they can use to cancel or remove a booking.
@@ -172,6 +179,6 @@ CREATE PROCEDURE CancelBooking(IN p_bookingID INT)
 	END //
 DELIMITER ;
 
-CALL CancelBooking(31);
+CALL CancelBooking(9);
 
-SELECT * FROM Bookings;
+-- SELECT * FROM Bookings;
