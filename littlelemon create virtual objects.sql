@@ -54,7 +54,7 @@ WHERE M.MenuID = ANY(SELECT MenuID FROM Orders WHERE Quantity >2);
 
 -- PREPARE statement_Name FROM 'INSERT INTO table1 VALUES (?, ?, ?, ?)';
 -- EXECUTE statement_name USING @variable;
-
+Update Orders set quantity = 5 where orderid = 1;
 -- Task 1: create a procedure that displays the maximum ordered quantity in the Orders table. 
 DROP PROCEDURE IF EXISTS GetMaxQuantity; 
 DELIMITER //
@@ -64,6 +64,8 @@ CREATE PROCEDURE GetMaxQuantity ()
 	END //
 DELIMITER ;
 CALL GetMaxQuantity;
+
+
 
 -- Task 2: prepared statement called GetOrderDetail. 
 -- The prepared statement should accept one input argument, the CustomerID value, from a variable. 

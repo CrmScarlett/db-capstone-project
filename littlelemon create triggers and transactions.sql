@@ -95,21 +95,26 @@ DROP PROCEDURE IF EXISTS AddBooking;
 DELIMITER //
 CREATE PROCEDURE AddBooking(IN p_bookingID INT, p_customerID INT, p_date DATE, p_tableno INT)
 	BEGIN
-    DECLARE ck_bookingid INT;
+    DECLARE ck_bookingid1 INT;
+    DECLARE ck_bookingid2 INT;
 		START TRANSACTION;		
         
-		SELECT BookingID INTO ck_bookingid FROM Bookings
-		WHERE Date = p_date AND TableNumber = p_tableno LIMIT 1;
+        SELECT BookingID INTO ck_bookingid1 FROM Bookings WHERE BookingID = p_BookingID;
+        IF ck_bookingid1 IS NOT NULL
+			THEN SELECT MAX(BookingID)+1 INTO p_BookingID FROM Bookings;
+		END IF;
         
-		SELECT MAX(BookingID)+1 INTO p_BookingID FROM Bookings;
+		SELECT BookingID INTO ck_bookingid2 FROM Bookings
+		WHERE Date = p_date AND TableNumber = p_tableno LIMIT 1;
+ 
 
-		IF ck_bookingid IS NULL
+		IF ck_bookingid2 IS NULL
         THEN  
  
         INSERT INTO Bookings(BookingID, Date, TableNumber,CustomerID)
         VALUES(p_bookingID, p_date,p_tableno,p_CustomerID);
         
-        SELECT CONCAT(p_tableno,' is available at selected date - New booking added, Booking ID: ',p_bookingID) AS 'Booking Status';
+        SELECT CONCAT('Table ',p_tableno,' is available at selected date - New booking added, Booking ID: ',p_bookingID) AS 'Booking Status';
         COMMIT;
         ELSE
         SELECT CONCAT('Table ',p_tableno,' is already booked - booking canceled') AS 'Booking Status';
@@ -118,8 +123,10 @@ CREATE PROCEDURE AddBooking(IN p_bookingID INT, p_customerID INT, p_date DATE, p
 	END //
 DELIMITER ;
 
-CALL AddBooking(9,4,"2025-04-22",5);
+CALL AddBooking(99,4,"2025-04-22",11);
 
+-- select * from bookings;
+ 
 -- Task2: create a new procedure called UpdateBooking that they can use to update existing bookings in the booking table.
 -- Input: BookingID, BookingDate
 
@@ -149,7 +156,7 @@ CREATE PROCEDURE UpdateBooking(IN p_bookingID INT,p_date DATE)
 	END //
 DELIMITER ;
 
-CALL UpdateBooking(9,"2025-04-23");
+CALL UpdateBooking(99,"2025-04-23");
 
 -- SELECT * FROM Bookings;
 
@@ -179,6 +186,6 @@ CREATE PROCEDURE CancelBooking(IN p_bookingID INT)
 	END //
 DELIMITER ;
 
-CALL CancelBooking(9);
+CALL CancelBooking(99);
 
 -- SELECT * FROM Bookings;
